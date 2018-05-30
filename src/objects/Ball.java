@@ -7,6 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -15,14 +16,16 @@ import javafx.util.Duration;
 public class Ball extends Circle {
 	private double orgSceneX, orgSceneY;
 	private double orgTranslateX, orgTranslateY;
-	Timeline timeline;
+	private Timeline timeline;
+	private BorderPane root;
 
 	private double velocityY, velocityX;
 	private static final double G_ACCEL = .1;
 	private static final int CORD_SIZE = 50;
+	private static ArrayList<Ball> balls = new ArrayList<>();
 	private ArrayList<Coordinate> mouseCords;
 
-	public Ball(double x, double y, double r) {
+	public Ball(double x, double y, double r, BorderPane root) {
 		super(x, y, r);
 		this.randomizeFill();
 		this.setOnMouseReleased(new MouseRelased(this));
@@ -34,9 +37,11 @@ public class Ball extends Circle {
 		this.velocityY = 0;
 		this.velocityX = 0;
 		this.timeline.play();
+		this.root = root;
+		balls.add(this);
 	}
 
-	public Ball(double x, double y, double r, Paint color) {
+	public Ball(double x, double y, double r, Paint color, BorderPane root) {
 		super(x, y, r);
 		this.setOnMouseReleased(new MouseRelased(this));
 		this.setOnMousePressed(new MousePressed(this));
@@ -47,6 +52,8 @@ public class Ball extends Circle {
 		this.velocityY = 0;
 		this.velocityX = 0;
 		this.timeline.play();
+		this.root = root;
+		balls.add(this);
 	}
 
 	public void randomizeFill() {
@@ -57,6 +64,7 @@ public class Ball extends Circle {
 	}
 
 	public void moveBall() {
+		// X translations
 		if (this.getTranslateY() + this.getCenterY() - this.getRadius() <= 0) {
 			this.velocityY = -this.velocityY * .8;
 			this.velocityX = this.velocityX * .8;
@@ -75,6 +83,7 @@ public class Ball extends Circle {
 			}
 		}
 
+		// Y translations
 		if (this.getTranslateX() + this.getCenterX() - this.getRadius() <= 0) {
 			this.velocityX = -this.velocityX * .8;
 			this.velocityY = this.velocityY * .8;
@@ -88,6 +97,27 @@ public class Ball extends Circle {
 		} else {
 			this.setTranslateX(this.getTranslateX() + this.velocityX);
 		}
+		/*
+		 * ArrayList<Ball> intersections = this.getIntersections(); if
+		 * (!intersections.isEmpty()) { this.setFill(Color.TRANSPARENT);
+		 * this.timeline.stop(); this.root.getChildren().remove(this);
+		 * this.balls.remove(this); for (Ball b : intersections) {
+		 * b.setFill(Color.TRANSPARENT); b.timeline.stop();
+		 * b.root.getChildren().remove(b); .balls.remove(b); } }
+		 */
+	}
+
+	private ArrayList<Ball> getIntersections() {
+		ArrayList<Ball> intersections = new ArrayList<>();
+		for (Ball otherBall : balls) {
+			if (otherBall != this) {
+				if (this.getBoundsInParent()
+						.intersects(otherBall.getBoundsInParent())) {
+					intersections.add(otherBall);
+				}
+			}
+		}
+		return intersections;
 	}
 
 	private class MouseRelased implements EventHandler<MouseEvent> {
@@ -119,12 +149,10 @@ public class Ball extends Circle {
 			this.parent.velocityX = (Double.isNaN((sum_diff_x / count) / 10))
 					? this.parent.velocityX
 					: (sum_diff_x / count) / 10;
-			System.out.println("v: " + this.parent.velocityY);
 			Ball.this.mouseCords.clear();
 
 			this.parent.getTranslateX();
 			this.parent.getTranslateY();
-			System.out.println(Ball.this.mouseCords);
 		}
 	}
 
