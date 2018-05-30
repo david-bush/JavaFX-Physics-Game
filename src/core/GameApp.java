@@ -33,7 +33,7 @@ public class GameApp extends Application {
 		Ball b10 = new Ball(143, 0, 45, root);
 		Ball b11 = new Ball(901, 4, 50, root);
 		Ball b12 = new Ball(654, 78, 48, root);
-		scene.setOnKeyPressed(new AddBallsHandler(root, 200.0));
+		scene.setOnKeyPressed(new AddBallsHandler(root, 100.0));
 		root.getChildren().add(b1);
 		root.getChildren().add(b2);
 		root.getChildren().add(b3);

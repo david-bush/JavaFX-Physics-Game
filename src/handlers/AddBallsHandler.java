@@ -30,6 +30,17 @@ public class AddBallsHandler implements EventHandler<KeyEvent> {
 			for (Node child : this.root.getChildren()) {
 				if (child instanceof Ball) {
 					((Ball) child).randomizeFill();
+					boolean x_or_y = Math.random() < 0.5;
+					boolean neg = Math.random() < 0.5;
+					double velocity = neg
+							? -(Math.random() * 20)
+							: (Math.random() * 20);
+
+					if (x_or_y) {
+						((Ball) child).setVelocityX(velocity);
+					} else {
+						((Ball) child).setVelocityY(velocity);
+					}
 				}
 			}
 		}

@@ -120,6 +120,22 @@ public class Ball extends Circle {
 		return intersections;
 	}
 
+	public double getVelocityY() {
+		return this.velocityY;
+	}
+
+	public void setVelocityY(double velocityY) {
+		this.velocityY = velocityY;
+	}
+
+	public double getVelocityX() {
+		return this.velocityX;
+	}
+
+	public void setVelocityX(double velocityX) {
+		this.velocityX = velocityX;
+	}
+
 	private class MouseRelased implements EventHandler<MouseEvent> {
 		private Ball parent;
 
